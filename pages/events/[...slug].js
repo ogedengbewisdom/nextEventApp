@@ -6,7 +6,9 @@ import ResultsTitle from "../../components/results-title";
 import ErrorAlert from "../../ui/error-alert";
 import Button from "../../ui/Button";
 
-const FilteredEventPage = () => {
+const FilteredEventPage = (props) => {
+    const {events} = props;
+    
     const router = useRouter();
     const filteredData = router.query.slug;
     
@@ -30,7 +32,11 @@ const FilteredEventPage = () => {
             </Fragment>
         )
     }
-    const filteredEvents = getFilteredEvents({year: numYear, month: numMonth});
+    // const filteredEvents = getFilteredEvents({year: numYear, month: numMonth});
+    const filteredEvents = events.filter(event => {
+        const eventDate = new Date(event.date)
+        return eventDate.getFullYear() === numYear && eventDate.getMonth() === numMonth -1
+    })
     if (!filteredEvents || filteredEvents.length === 0) {
         return (
             <Fragment>
@@ -51,6 +57,29 @@ const FilteredEventPage = () => {
             <EventList items={filteredEvents} />
         </Fragment>
     )
+}
+
+export const getServerSideProps = async() => {
+    const response = await fetch("https://nextjs-e65fb-default-rtdb.firebaseio.com/events.json");
+    const resData = await response.json();
+    const transformedEvents = [];
+    for( const key in resData ) {
+        transformedEvents.push({
+            id: key,
+            title: resData[key].title,
+            date: resData[key].date,
+            description: resData[key].description,
+            location: resData[key].location,
+            image: resData[key].image,
+            isFeatured: resData[key].isFeatured
+        })
+    }
+
+    return {
+        props: {
+            events: transformedEvents
+        }
+    }
 }
 
 export default FilteredEventPage;
