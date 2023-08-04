@@ -7,11 +7,13 @@ import { getEventById } from "../../dummy_data";
 import ErrorAlert from "../../ui/error-alert";
 import Button from "../../ui/Button";
 
-const EventDetailPage = () => {
+const EventDetailPage = (props) => {
 
-    const router = useRouter();
-    const eventId = router.query.eventId;
-    const event = getEventById(eventId);
+    // const router = useRouter();
+    // const eventId = router.query.eventId;
+    // const event = getEventById(eventId);
+
+    const {event} = props
     if (!event) {
         return(
             <Fragment>
@@ -32,6 +34,49 @@ const EventDetailPage = () => {
             </EventContent>
         </Fragment>
     )
+}
+
+const getEvent = async () => {
+    const response = await fetch("https://nextjs-e65fb-default-rtdb.firebaseio.com/events.json");
+    const resData = await response.json();
+    const transformedEvents = [];
+    for( const key in resData ) {
+        transformedEvents.push({
+            id: key,
+            title: resData[key].title,
+            date: resData[key].date,
+            description: resData[key].description,
+            location: resData[key].location,
+            image: resData[key].image,
+            isFeatured: resData[key].isFeatured
+        })
+    }
+
+    return transformedEvents
+}
+
+export const getStaticProps = async (context) => {
+    const {params} = context;
+    const eventId = params.eventId;
+    const event = await getEvent();
+    const eventDetails = event.find(item => item.id === eventId);
+
+    return {
+        props: {
+            event: eventDetails
+        }
+    }
+}
+
+export const getStaticPaths =async (context) => {
+
+
+    const event = await getEvent();
+    const pathsWithParams = event.map(item => ({params: {eventId: item.id}}))
+    return {
+        paths: pathsWithParams,
+        fallback: "blocking"
+    }
 }
 
 export default EventDetailPage;
