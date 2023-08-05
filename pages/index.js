@@ -1,5 +1,7 @@
 // import { useEffect, useState } from "react";
+import { Fragment } from "react";
 import EventList from "../components/EventList";
+import Head from "next/head";
 
 
 const HomePage = (props) => {
@@ -42,7 +44,13 @@ const HomePage = (props) => {
     // console.log(event)
 
     return (
-        <EventList items={filteredEvents} />
+        <Fragment>
+            <Head>
+                <title>Nextjs Events</title>
+                <meta name="description" content="Find events that can make your life fufilled" />
+            </Head>
+            <EventList items={filteredEvents} />
+        </Fragment>
     )
 }
 
