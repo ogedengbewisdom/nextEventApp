@@ -2,6 +2,7 @@
 import { Fragment } from "react";
 import EventList from "../components/EventList";
 import Head from "next/head";
+import { getAllEvents, getFeaturedEvents } from "../helpers/apiUtil";
 
 
 const HomePage = (props) => {
@@ -56,25 +57,12 @@ const HomePage = (props) => {
 
 export const getStaticProps = async () => {
 
-    const response = await fetch("https://nextjs-e65fb-default-rtdb.firebaseio.com/events.json");
-    const resData = await response.json();
-    const transformedEvents = [];
-    for( const key in resData ) {
-        transformedEvents.push({
-            id: key,
-            title: resData[key].title,
-            date: resData[key].date,
-            description: resData[key].description,
-            location: resData[key].location,
-            image: resData[key].image,
-            isFeatured: resData[key].isFeatured
-        })
-    }
+    const events =await getFeaturedEvents()
 
     
     return {
         props: {
-            events: transformedEvents
+            events: events
         }
     }
 }
