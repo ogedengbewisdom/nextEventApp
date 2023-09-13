@@ -12,7 +12,7 @@ const EventItem = ({image, title, date, location, id}) => {
     const formatLocation = location.replace(",", "\n")
     return (
         <li className={classes.item}>
-            <Image src={`/${image}`} alt={title} width={250} height={160} />
+            <Image src={`/${image}`} alt={title} width={250} height={160} priority={true} />
             <div className={classes.content}>
                 <div>
                     <div className={classes.summary}>
