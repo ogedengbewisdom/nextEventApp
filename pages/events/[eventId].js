@@ -8,6 +8,7 @@ import ErrorAlert from "../../ui/error-alert";
 import Button from "../../ui/Button";
 import Head from "next/head"
 import { getAllEvents, getEventById } from "../../helpers/apiUtil";
+import Comments from "../../components/input/comments";
 
 const EventDetailPage =  (props) => {
 
@@ -62,7 +63,7 @@ const EventDetailPage =  (props) => {
             <EventContent>
                 <p>{event.description}</p>
             </EventContent>
-            
+            <Comments eventId={event.id} /> 
         </Fragment>
     )
 }
