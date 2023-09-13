@@ -17,7 +17,7 @@ const FilteredEventPage = (props) => {
 
     const fetcher = (url) => fetch(url).then((res) => res.json());
 
-    const {data, error} = useSWR("https://nextjs-e65fb-default-rtdb.firebaseio.com/events.json", fetcher);
+    const {data, error} = useSWR("https://nexteventapp-ce21a-default-rtdb.firebaseio.com/events.json", fetcher);
 
     useEffect( () => {
         const events = [];
@@ -32,9 +32,10 @@ const FilteredEventPage = (props) => {
         }
     }, [data])
 
-    if(!filteredData) {
-        return <p className="center">Loading...</p>
-    };
+    if (!filteredData || !data) {
+        return <p className="center">Loading...</p>;
+    }
+    
 
 
     const year = filteredData[0];
@@ -62,12 +63,17 @@ const FilteredEventPage = (props) => {
             </Fragment>
         )
     }
-     const filteredEvents =  loadedEvents.filter(item => {
-        const eventDate = new Date(item.date);
-        return eventDate.getFullYear() === numYear && eventDate.getMonth() === numMonth - 1
-     })
+
+    const filteredEvents = loadedEvents.filter((event) => {
+        const eventDate = new Date(event.date);
+        return (
+          eventDate.getFullYear() === numYear &&
+          eventDate.getMonth() === numMonth - 1
+        );
+      });
     
     if (!filteredEvents || filteredEvents.length === 0) {
+
         return (
             <Fragment>
                 {pageHeaderData}
@@ -79,6 +85,8 @@ const FilteredEventPage = (props) => {
         )
         
     }
+
+   
 
     pageHeaderData = (
         <Head>
