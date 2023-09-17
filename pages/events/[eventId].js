@@ -19,7 +19,6 @@ const EventDetailPage =  (props) => {
     // const event = await getEventById(eventId);
 
     const {event} = props
-
     // useEffect( () => {
     //     const sendHttp = async () => {
            
