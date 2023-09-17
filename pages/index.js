@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import EventList from "../components/EventList";
 import Head from "next/head";
 import { getAllEvents, getFeaturedEvents } from "../helpers/apiUtil";
+import NewsletterRegistration from "../components/input/newsletter-registration";
 
 
 const HomePage = (props) => {
@@ -44,12 +45,24 @@ const HomePage = (props) => {
 
     // console.log(event)
 
+    const newletterHandler = async (email) => {
+        const response = await fetch("/api/newsLetter", {
+            method: "POST",
+            body: JSON.stringify({email}),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+    }
+
     return (
         <Fragment>
             <Head>
                 <title>Nextjs Events</title>
                 <meta name="description" content="Find events that can make your life fufilled" />
             </Head>
+            <NewsletterRegistration onSend={newletterHandler}/>
             <EventList items={filteredEvents} />
         </Fragment>
     )
@@ -57,7 +70,7 @@ const HomePage = (props) => {
 
 export const getStaticProps = async () => {
 
-    const events =await getFeaturedEvents()
+    const events = await getFeaturedEvents()
 
     
     return {
