@@ -1,9 +1,10 @@
 // import { useEffect, useState } from "react";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import EventList from "../components/EventList";
 import Head from "next/head";
 import { getAllEvents, getFeaturedEvents } from "../helpers/apiUtil";
 import NewsletterRegistration from "../components/input/newsletter-registration";
+import NotificationCtx from "../store/notification-context";
 
 
 const HomePage = (props) => {
@@ -45,15 +46,41 @@ const HomePage = (props) => {
 
     // console.log(event)
 
-    const newletterHandler = async (email) => {
-        const response = await fetch("/api/newsLetter", {
-            method: "POST",
-            body: JSON.stringify({email}),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+    const notification = useContext(NotificationCtx);
+    const activeNotification = notification.showNotification
 
+
+
+    const newletterHandler = async (email) => {
+        activeNotification({
+            title: "Sending...",
+            message: "Please wait",
+            status: "pending"
+        })
+        try {
+            const response = await fetch("/api/newsLetter", {
+                method: "POST",
+                body: JSON.stringify({email}),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            if(!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message)
+            }
+            activeNotification({
+                title: "success",
+                message: "Email sent",
+                status: "success"
+            })
+        } catch(error) {
+            activeNotification({
+                title: "Failed!",
+                message: error.message,
+                status: "error"
+            })
+        }
     }
 
     return (
