@@ -1,12 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import classes from './notification.module.css';
 import NotificationCtx from '../store/notification-context';
 
 function Notification(props) {
-  const notification = useContext(NotificationCtx)
+  const notification = useContext(NotificationCtx);
+  const activeNotification = notification.notification
 
   const { title, message, status } = props;
+
+ 
 
   let statusClasses = '';
 
@@ -21,6 +24,17 @@ function Notification(props) {
   if (status === 'pending') {
     statusClasses = classes.pending;
   }
+
+  useEffect(() => {
+    if (activeNotification.status === "success" || activeNotification.status === "error") {
+      const timer = setTimeout(() => {
+        notification.hideNotification()
+      }, 2000);
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [notification, activeNotification])
 
   const activeClasses = `${classes.notification} ${statusClasses}`;
 
